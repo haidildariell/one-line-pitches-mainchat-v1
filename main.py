@@ -15,13 +15,26 @@ SENTENCE = (
     "dream turn real."
 )
 
+ENTRY_FILENAME = "entry.txt"
+DEFAULT_OUTPUT_DIR = "/output"
+
+
+def output_dir() -> str:
+    """Resolve the output directory: MAKEFUN_OUTPUT_DIR wins, else /output."""
+    return os.environ.get("MAKEFUN_OUTPUT_DIR") or DEFAULT_OUTPUT_DIR
+
+
+def write_entry(text: str, directory: str) -> str:
+    """Write text to entry.txt inside directory; return the file path."""
+    os.makedirs(directory, exist_ok=True)
+    path = os.path.join(directory, ENTRY_FILENAME)
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write(text)
+    return path
+
 
 def main() -> None:
-    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
-    os.makedirs(out_dir, exist_ok=True)
-    out_path = os.path.join(out_dir, "entry.txt")
-    with open(out_path, "w", encoding="utf-8") as fh:
-        fh.write(SENTENCE)
+    write_entry(SENTENCE, output_dir())
 
 
 if __name__ == "__main__":
